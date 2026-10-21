@@ -23,8 +23,8 @@ jobs:
           python3 "$F" entity add --name Personal --type personal
           python3 "$F" entity add --name Studio --type business
           python3 "$F" cash set --entity Personal --name Cash --balance 100000
-          python3 "$F" income add --entity Personal --name Salary --amount 60000 --employment
-          python3 "$F" expense add --entity Personal --name Rent --amount 20000
+          python3 "$F" income add --entity Personal --name Side income --amount 20000
+          python3 "$F" expense add --entity Personal --name Rent --amount 40000
           python3 "$F" expense add --entity Personal --name Insurance --amount 24000 --frequency annual
           python3 "$F" expense add --entity Studio --name Rent --amount 15000
           python3 "$F" check
@@ -34,7 +34,10 @@ jobs:
           import json
           snap = json.load(open('snapshot.json'))
           assert snap['combined']['cash'] == 100000, snap
-          assert snap['combined']['runwayMonths'] is not None
+          # 100k cash / (42k personal + 15k studio - 20k income) = 2.7 months
+          assert snap['combined']['runwayMonths'] == 2.7, snap
+          personal = next(e for e in snap['entities'] if e['entity'] == 'Personal')
+          assert personal['runwayMonths'] == 4.5, personal
           imp = json.load(open('import.json'))
           assert imp['format'] == 'excited.live/accounting-import'
           assert imp['book']['entities'], imp
