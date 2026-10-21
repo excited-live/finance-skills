@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate skill structure
+        run: python3 scripts/validate_skills.py
+      - name: finance-life smoke test
+        run: |
+          export FINANCE_HOME="$(mktemp -d)"
+          F=skills/finance-life/scripts/finance.py
+          python3 "$F" init
+          python3 "$F" entity add --name Personal --type personal
+          python3 "$F" entity add --name Studio --type business
+          python3 "$F" cash set --entity Personal --name Cash --balance 100000
+          python3 "$F" income add --entity Personal --name Salary --amount 60000 --employment
+          python3 "$F" expense add --entity Personal --name Rent --amount 20000
+          python3 "$F" expense add --entity Personal --name Insurance --amount 24000 --frequency annual
+          python3 "$F" expense add --entity Studio --name Rent --amount 15000
+          python3 "$F" check
+          python3 "$F" snapshot --json > snapshot.json
+          python3 "$F" export --out import.json
+          python3 - <<'PY'
+          import json
+          snap = json.load(open('snapshot.json'))
+          assert snap['combined']['cash'] == 100000, snap
+          assert snap['combined']['runwayMonths'] is not None
+          imp = json.load(open('import.json'))
+          assert imp['format'] == 'excited.live/accounting-import'
+          assert imp['book']['entities'], imp
+          print('ok', snap['combined'])
+          PY
+      - name: thai-personal-tax smoke test
+        run: |
+          python3 skills/thai-personal-tax/scripts/tax.py --employment 960000 --json > tax.json
+          python3 - <<'PY'
+          import json
+          d = json.load(open('tax.json'))
+          assert d['tax'] > 0
+          assert d['effectiveRate'] <= d['marginalRate']
+          print('ok', d['tax'])
+          PY

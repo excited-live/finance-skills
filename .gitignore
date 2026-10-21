@@ -1,0 +1,17 @@
+# user data never belongs in the repo
+book.json
+import.json
+snapshot.json
+tax.json
+finance/
+*.local.json
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+
+# os / editors
+.DS_Store
+.idea/
+.vscode/

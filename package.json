@@ -1,0 +1,25 @@
+{
+  "name": "finance-skills",
+  "version": "0.1.0",
+  "description": "Open Agent Skills for documenting a whole financial life in one local file, with runway and Thai tax estimates.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/excited-live/finance-skills.git"
+  },
+  "keywords": [
+    "agent-skills",
+    "skills.sh",
+    "finance",
+    "runway",
+    "personal-finance",
+    "thailand"
+  ],
+  "files": [
+    "skills",
+    "scripts",
+    "README.md",
+    "AGENTS.md",
+    "LICENSE"
+  ]
+}
