@@ -24,7 +24,7 @@ jobs:
           python3 "$F" entity add --name Personal --type personal
           python3 "$F" entity add --name Studio --type business
           python3 "$F" cash set --entity Personal --name Cash --balance 100000
-          python3 "$F" income add --entity Personal --name Side income --amount 20000
+          python3 "$F" income add --entity Personal --name "Side income" --amount 20000
           python3 "$F" expense add --entity Personal --name Rent --amount 40000
           python3 "$F" expense add --entity Personal --name Insurance --amount 24000 --frequency annual
           python3 "$F" expense add --entity Studio --name Rent --amount 15000
